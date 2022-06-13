@@ -7,24 +7,33 @@ import Instagram from "../../assets/img/ig.svg";
 import Facebook from "../../assets/img/fb.svg";
 import Twitter from "../../assets/img/tw.svg";
 import Logo from "../../assets/img/logo.png";
-// import OpenEye from "../../assets/img/open-eye.png";
-// import ClosedEye from "../../assets/img/closed-eye.png";
+import OpenEye from "../../assets/img/open-eye.png";
+import ClosedEye from "../../assets/img/closed-eye.png";
+
 
 import "./Auth.css";
 
 
 class Auth extends Component {
-  state = {
-    email: "",
-    pass: "",
-    phone_number: "",
-    isPasswordShown: false,
-    isError: false,
-    errorMsg: "",
+  constructor() {
+    super();
+    this.state = {
+      email: "",
+      pass: "",
+      phone_number: "",
+      isError: false,
+      errorMsg: "",
+      isRegistered: false,
+      isPasswordShown: false,
+    };
+  };
+
+  componentDidMount() {
+    document.title = "Sign Up"
   }
   render() {
-    if (this.state.isRegistered === true){
-      return <Navigate to="/login" />
+    if (this.state.isRegistered === true) {
+      return <Navigate to="/Login" />
     }
     return (
       <main className='box'>
@@ -39,6 +48,7 @@ class Auth extends Component {
               <p className="title-textauth">Sign Up</p>
             </div>
           </header>
+
           <div className="formauth">
             <div className="containerauth">
               <form className="form-containerauth">
@@ -54,52 +64,57 @@ class Auth extends Component {
                 </div>
                 <div className="mb-3">
                   <label htmlFor='pass' className="label-input-auth">Password :</label>
-                  <input type={`${this.state.isPasswordShown ? "text" : "password"}`}
-                    className="auth-input-password" placeholder="Enter your password"
+                  <input type={this.state.isPasswordShown ? "text" : "password"} className="auth-input-password" placeholder="Enter your password"
                     onChange={(e) => {
                       this.setState({
-                        pass: e.target.value,
+                        pass: e.target.value
                       });
                     }}
                   />
+                  <div className='icon-pass-container'
+                    onClick={() => {
+                      this.setState({
+                        isPasswordShown: !this.state.isPasswordShown
+                      })
+                    }}>
+                    {this.state.isPasswordShown ? <img src={OpenEye} alt="Open-Eye" className='pass-icon' /> : <img src={ClosedEye} alt="Closed-Eye" className='pass-icon' />}
+                  </div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor='phone_number' className="label-input-auth">Phone Number :</label>
                   <input type="text" className="auth-input-text" placeholder="Enter your phone number"
-                    onChange={(e) => {
+                    onCange={(e) => {
                       this.setState({
                         phone_number: e.target.value,
                       });
                     }}
                   />
                 </div>
-                {this.state.isError ? <p>{this.state.errorMsg}</p> : <></>}
+                {this.state.isError ? <div className='signup-error'>{this.state.errorMsg}</div> : <></>}
+
                 <div className="mb-3">
-                  <button type="button" className="btn-signup" 
+                  <button className="btn-signup" data-bs-toggle="modal" data-bs-target="#exampleModal"
                     onClick={() => {
-                    const { email, pass, phone_number } = this.state;
-                    const body = {
-                      email,
-                      phone_number,
-                      pass,
-                    };
-                    axios.post("http://localhost:8080/auth/new", body)
-                      .then((result) => {
-                        console.log(result.data);
-                        this.setState({
-                          isError: false,
-                          errorMsg: "",
-                        });
-                      })
-                      .catch((error) => {
-                        this.setState({
-                          isError: true,
-                          errorMsg: error.response.data.err.msg,
-                        });
-                      });
-                  }}
-                  >
-                    Sign Up
+                      const { email, pass, phone_number } = this.state;
+                      const body = {email, pass, phone_number};
+                  axios
+                  .post("http://localhost:8080/auth/new", body)
+                  .then(result => {
+                    console.log(result.data.data)
+                    this.setState({
+                    isError: false,
+                    })
+                  })
+                  .catch(error => {
+                    console.log(error.response)
+                    this.setState({
+                    isError: true,
+                  errorMsg: `${error.response.data.err.msg}`
+                    })
+                  })
+                }}
+                >
+                  Sign Up
                   </button>
                 </div>
                 <div className="mb-3">
@@ -123,6 +138,7 @@ class Auth extends Component {
               </form>
             </div>
           </div>
+
           <footer className="side-infoauth">
             <section className="left-infoauth">
               <section className="headauth">

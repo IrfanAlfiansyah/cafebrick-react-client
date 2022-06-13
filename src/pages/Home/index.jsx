@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from "axios";
+// import axios from "axios";
 import "./Home.css";
 // import withParams from '../../helper/withParams';
 import withSearchParams from '../../helper/withSearchParams';
