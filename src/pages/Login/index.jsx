@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from "axios";
 import Profilesignin from "../../assets/img/profilesignin.png";
 import Google from "../../assets/img/google.png";
@@ -17,10 +17,14 @@ class Login extends Component {
     isPasswordShown: false,
     isError: false,
     errorMsg: "",
+    isSuccess: false,
   }
   render() {
-    const userInfo = JSON.parse(localStorage.getItem("userinfo-cafebrick"));
-    console.log(userInfo.token)
+   if (this.state.isSuccess === true) {
+    return <Navigate to="/" />
+   }
+    //const userInfo = JSON.parse(localStorage.getItem("userinfo-cafebrick"));
+    //console.log(userInfo.token)
     return (
       <div className="containerlog">
         <aside className="side-content">
@@ -73,7 +77,7 @@ class Login extends Component {
                 email,
                 pass,
               };
-              axios.post("http://localhost:8080/auth", body)
+              axios.post(`${process.env.REACT_APP_HOST}/auth`, body)
                 .then((result) => {
                   console.log(result.data);
                   localStorage.setItem(
@@ -82,9 +86,11 @@ class Login extends Component {
                   this.setState({
                     isError: false,
                     errorMsg: "",
+                    isSuccess: true,
                   });
                 })
                 .catch((error) => {
+                  console.log(error)
                   this.setState({
                     isError: true,
                     errorMsg: error.response.data.err.msg,

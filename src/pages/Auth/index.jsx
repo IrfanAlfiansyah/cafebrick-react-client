@@ -25,12 +25,10 @@ class Auth extends Component {
       errorMsg: "",
       isRegistered: false,
       isPasswordShown: false,
+      isSuccess: "",
     };
   };
 
-  componentDidMount() {
-    document.title = "Sign Up"
-  }
   render() {
     if (this.state.isRegistered === true) {
       return <Navigate to="/Login" />
@@ -90,19 +88,21 @@ class Auth extends Component {
                     }}
                   />
                 </div>
-                {this.state.isError ? <div className='signup-error'>{this.state.errorMsg}</div> : <></>}
+                {/* {this.state.isError ? <div className='signup-error'>{this.state.errorMsg}</div> : <></>} */}
 
                 <div className="mb-3">
                   <button className="btn-signup" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                    onClick={() => {
+                    onClick={() => { 
+                      alert("hallo")
                       const { email, pass, phone_number } = this.state;
                       const body = {email, pass, phone_number};
                   axios
-                  .post("http://localhost:8080/auth/new", body)
+                  .post(`${process.env.REACT_APP_HOST}/auth/new`, body)
                   .then(result => {
                     console.log(result.data.data)
                     this.setState({
                     isError: false,
+                    isSuccess: result.data.data.msg,
                     })
                   })
                   .catch(error => {

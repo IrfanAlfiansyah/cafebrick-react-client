@@ -200,7 +200,7 @@
 .checklist{
   display: flex;
   align-items: center;
-  justify-content: start;
+  /* justify-content: start; */
   margin-bottom: 15px;
 }
 .checklist-text{
